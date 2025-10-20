@@ -34,8 +34,12 @@ public class SecurityConfiguration {
 
         //  auth.requestMatchers("/loans", "/balance", "/cards", "/account").authenticated()
 
+        // Agregamos un filtro antes que se pase por BasicAuthenticationFilter
+        httpSecurity.addFilterBefore(new ApiKeyFilter(), BasicAuthenticationFilter.class);
+
         var requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
+
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
