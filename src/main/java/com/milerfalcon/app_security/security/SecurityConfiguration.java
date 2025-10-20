@@ -3,6 +3,7 @@ package com.milerfalcon.app_security.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Configuration
+//@EnableMethodSecurity
 public class SecurityConfiguration {
 
     @Bean
@@ -37,10 +39,8 @@ public class SecurityConfiguration {
 
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/loans").hasAuthority("VIEW_LOANS")
-                        .requestMatchers("/balance").hasAuthority("VIEW_BALANCE")
-                        .requestMatchers("/cards").hasAuthority("VIEW_CARDS")
-                        .requestMatchers("/account").hasAnyAuthority("VIEW_ACCOUNT", "VIEW_CARDS")
+                        .requestMatchers("/loans", "/balance").hasRole("USER")
+                        .requestMatchers("/cards", "/account").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .formLogin(Customizer.withDefaults())
