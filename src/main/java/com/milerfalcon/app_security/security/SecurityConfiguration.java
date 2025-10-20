@@ -30,13 +30,18 @@ public class SecurityConfiguration {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
+        //  auth.requestMatchers("/loans", "/balance", "/cards", "/account").authenticated()
+
         var requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
 
         httpSecurity
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/loans", "/about", "/balance", "/cards", "/account").authenticated()
-                                .anyRequest().permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/loans").hasAuthority("VIEW_LOANS")
+                        .requestMatchers("/balance").hasAuthority("VIEW_BALANCE")
+                        .requestMatchers("/cards").hasAuthority("VIEW_CARDS")
+                        .requestMatchers("/account").hasAnyAuthority("VIEW_ACCOUNT", "VIEW_CARDS")
+                        .anyRequest().permitAll()
                 )
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
